@@ -3,29 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Parquet Dashboard</title>
+    <title>ODD Alerts Dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <div class="page">
         <header class="topbar">
             <div>
-                <h1>Parquet File Dashboard</h1>
-                <p>Data File Volume Monitoring by Period</p>
+                <h1>ODD Alerts Dashboard</h1>
+                <p>Monitoring alert counts by name, year, and month</p>
             </div>
         </header>
 
         <main class="content">
             <section class="card">
                 <div class="card-header">
-                    <h2>Available Parquet Files</h2>
-                    <p>Select a year to view monthly and daily record counts.</p>
+                    <h2>Available Alert Statuses</h2>
+                    <p>Select a name to view yearly totals and monthly counts.</p>
                 </div>
 
                 <div class="summary-table">
                     <div class="table-header">
-                        <div>Year / Month / Date</div>
-                        <div>Total Rows</div>
+                        <div>Name / Year / Month</div>
+                        <div>Total Count</div>
                     </div>
 
                     <div id="yearList" class="table-body"></div>

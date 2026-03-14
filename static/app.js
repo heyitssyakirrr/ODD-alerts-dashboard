@@ -1,129 +1,131 @@
-async function loadYears() {
-    const response = await fetch("/api/years");
-    const years = await response.json();
+async function loadNames() {
+    const response = await fetch("/api/names");
+    const names = await response.json();
 
     const yearList = document.getElementById("yearList");
     yearList.innerHTML = "";
 
-    years.forEach(yearItem => {
-        const yearWrapper = document.createElement("div");
-        yearWrapper.className = "year-wrapper";
+    names.forEach(nameItem => {
+        const nameWrapper = document.createElement("div");
+        nameWrapper.className = "year-wrapper";
 
-        const yearRow = document.createElement("div");
-        yearRow.className = "table-row year-row";
+        const nameRow = document.createElement("div");
+        nameRow.className = "table-row year-row";
 
-        const yearLeft = document.createElement("div");
-        yearLeft.className = "cell cell-label";
-        yearLeft.innerHTML = `<span class="expand-icon">▶</span> ${yearItem.year}`;
+        const nameLeft = document.createElement("div");
+        nameLeft.className = "cell cell-label";
+        nameLeft.innerHTML = `<span class="expand-icon">▶</span> ${nameItem.NAME}`;
 
-        const yearRight = document.createElement("div");
-        yearRight.className = "cell cell-count";
-        yearRight.textContent = yearItem.total_rows;
+        const nameRight = document.createElement("div");
+        nameRight.className = "cell cell-count";
+        nameRight.textContent = Number(nameItem.total_count).toLocaleString();
 
-        yearRow.appendChild(yearLeft);
-        yearRow.appendChild(yearRight);
+        nameRow.appendChild(nameLeft);
+        nameRow.appendChild(nameRight);
 
-        const monthContainer = document.createElement("div");
-        monthContainer.className = "month-container";
-        monthContainer.style.display = "none";
+        const yearContainer = document.createElement("div");
+        yearContainer.className = "month-container";
+        yearContainer.style.display = "none";
 
-        let monthsLoaded = false;
+        let yearsLoaded = false;
 
-        yearRow.addEventListener("click", async () => {
-            const icon = yearLeft.querySelector(".expand-icon");
+        nameRow.addEventListener("click", async () => {
+            const icon = nameLeft.querySelector(".expand-icon");
 
-            if (monthContainer.style.display === "none") {
-                if (!monthsLoaded) {
-                    const monthResponse = await fetch(`/api/months?year=${encodeURIComponent(yearItem.year)}`);
-                    const months = await monthResponse.json();
+            if (yearContainer.style.display === "none") {
+                if (!yearsLoaded) {
+                    const yearResponse = await fetch(`/api/years?name=${encodeURIComponent(nameItem.NAME)}`);
+                    const years = await yearResponse.json();
 
-                    monthContainer.innerHTML = "";
+                    yearContainer.innerHTML = "";
 
-                    months.forEach(monthItem => {
-                        const monthWrapper = document.createElement("div");
-                        monthWrapper.className = "month-wrapper";
+                    years.forEach(yearItem => {
+                        const yearWrapper = document.createElement("div");
+                        yearWrapper.className = "month-wrapper";
 
-                        const monthRow = document.createElement("div");
-                        monthRow.className = "table-row month-row";
+                        const yearRow = document.createElement("div");
+                        yearRow.className = "table-row month-row";
 
-                        const monthLeft = document.createElement("div");
-                        monthLeft.className = "cell cell-label";
-                        monthLeft.innerHTML = `<span class="expand-icon">▶</span> ${monthItem.month}`;
+                        const yearLeft = document.createElement("div");
+                        yearLeft.className = "cell cell-label";
+                        yearLeft.innerHTML = `<span class="expand-icon">▶</span> ${yearItem.year}`;
 
-                        const monthRight = document.createElement("div");
-                        monthRight.className = "cell cell-count";
-                        monthRight.textContent = monthItem.total_rows;
+                        const yearRight = document.createElement("div");
+                        yearRight.className = "cell cell-count";
+                        yearRight.textContent = Number(yearItem.total_count).toLocaleString();
 
-                        monthRow.appendChild(monthLeft);
-                        monthRow.appendChild(monthRight);
+                        yearRow.appendChild(yearLeft);
+                        yearRow.appendChild(yearRight);
 
-                        const dateContainer = document.createElement("div");
-                        dateContainer.className = "date-container";
-                        dateContainer.style.display = "none";
+                        const monthContainer = document.createElement("div");
+                        monthContainer.className = "date-container";
+                        monthContainer.style.display = "none";
 
-                        let datesLoaded = false;
+                        let monthsLoaded = false;
 
-                        monthRow.addEventListener("click", async (event) => {
+                        yearRow.addEventListener("click", async (event) => {
                             event.stopPropagation();
 
-                            const monthIcon = monthLeft.querySelector(".expand-icon");
+                            const yearIcon = yearLeft.querySelector(".expand-icon");
 
-                            if (dateContainer.style.display === "none") {
-                                if (!datesLoaded) {
-                                    const dateResponse = await fetch(`/api/dates?month=${encodeURIComponent(monthItem.month)}`);
-                                    const dates = await dateResponse.json();
+                            if (monthContainer.style.display === "none") {
+                                if (!monthsLoaded) {
+                                    const monthResponse = await fetch(
+                                        `/api/months?name=${encodeURIComponent(nameItem.NAME)}&year=${encodeURIComponent(yearItem.year)}`
+                                    );
+                                    const months = await monthResponse.json();
 
-                                    dateContainer.innerHTML = "";
+                                    monthContainer.innerHTML = "";
 
-                                    dates.forEach(dateItem => {
-                                        const dateRow = document.createElement("div");
-                                        dateRow.className = "table-row date-row";
+                                    months.forEach(monthItem => {
+                                        const monthRow = document.createElement("div");
+                                        monthRow.className = "table-row date-row";
 
-                                        const dateLeft = document.createElement("div");
-                                        dateLeft.className = "cell cell-label";
-                                        dateLeft.textContent = dateItem.date;
+                                        const monthLeft = document.createElement("div");
+                                        monthLeft.className = "cell cell-label";
+                                        monthLeft.textContent = monthItem.month;
 
-                                        const dateRight = document.createElement("div");
-                                        dateRight.className = "cell cell-count";
-                                        dateRight.textContent = dateItem.total_rows;
+                                        const monthRight = document.createElement("div");
+                                        monthRight.className = "cell cell-count";
+                                        monthRight.textContent = Number(monthItem.total_count).toLocaleString();
 
-                                        dateRow.appendChild(dateLeft);
-                                        dateRow.appendChild(dateRight);
+                                        monthRow.appendChild(monthLeft);
+                                        monthRow.appendChild(monthRight);
 
-                                        dateContainer.appendChild(dateRow);
+                                        monthContainer.appendChild(monthRow);
                                     });
 
-                                    datesLoaded = true;
+                                    monthsLoaded = true;
                                 }
 
-                                dateContainer.style.display = "block";
-                                monthIcon.textContent = "▼";
+                                monthContainer.style.display = "block";
+                                yearIcon.textContent = "▼";
                             } else {
-                                dateContainer.style.display = "none";
-                                monthIcon.textContent = "▶";
+                                monthContainer.style.display = "none";
+                                yearIcon.textContent = "▶";
                             }
                         });
 
-                        monthWrapper.appendChild(monthRow);
-                        monthWrapper.appendChild(dateContainer);
-                        monthContainer.appendChild(monthWrapper);
+                        yearWrapper.appendChild(yearRow);
+                        yearWrapper.appendChild(monthContainer);
+                        yearContainer.appendChild(yearWrapper);
                     });
 
-                    monthsLoaded = true;
+                    yearsLoaded = true;
                 }
 
-                monthContainer.style.display = "block";
+                yearContainer.style.display = "block";
                 icon.textContent = "▼";
             } else {
-                monthContainer.style.display = "none";
+                yearContainer.style.display = "none";
                 icon.textContent = "▶";
             }
         });
 
-        yearWrapper.appendChild(yearRow);
-        yearWrapper.appendChild(monthContainer);
-        yearList.appendChild(yearWrapper);
+        nameWrapper.appendChild(nameRow);
+        nameWrapper.appendChild(yearContainer);
+        yearList.appendChild(nameWrapper);
     });
 }
 
-loadYears();
+loadNames();

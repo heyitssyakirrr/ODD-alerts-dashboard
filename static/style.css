@@ -75,80 +75,103 @@ body {
 }
 
 .table-header {
-    background: #f9fafb;
+    background: #f3f4f6;
     color: #374151;
     font-weight: 700;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid #d1d5db;
     font-size: 15px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
 }
 
 .table-header > div,
 .cell {
-    padding: 16px 24px;
+    padding: 18px 24px;
 }
 
 .table-row {
-    border-bottom: 1px solid #edf0f2;
+    border-bottom: 1px solid #eceff3;
 }
 
-/* YEAR ROW */
+.cell-label {
+    display: flex;
+    align-items: center;
+}
+
+.cell-count {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.2px;
+}
+
+/* NAME ROW */
 .year-row {
     cursor: pointer;
-    background: #fff;
+    background: #fdf2f4;
     font-weight: 700;
     font-size: 16px;
-    color: #111827;
-    transition: background 0.2s ease, box-shadow 0.2s ease;
+    color: #7f1d2d;
+    transition: background 0.2s ease;
 }
 
 .year-row:hover {
-    background: #f8fafc;
+    background: #fbe7eb;
 }
 
 .year-row .cell-label {
-    border-left: 4px solid #8b1e2d;
+    border-left: 5px solid #8b1e2d;
     padding-left: 20px;
 }
 
-/* MONTH ROW */
+.year-row .cell-count {
+    font-size: 16px;
+    font-weight: 700;
+    color: #7f1d2d;
+}
+
+/* YEAR ROW */
 .month-row {
     cursor: pointer;
-    background: #fcf7f8;
+    background: #f8fafc;
     font-weight: 600;
-    color: #7a1c2b;
+    color: #334155;
     transition: background 0.2s ease;
 }
 
 .month-row:hover {
-    background: #f9eef1;
+    background: #eef2f7;
 }
 
 .month-row .cell-label {
-    padding-left: 44px;
+    padding-left: 48px;
 }
 
-/* DATE ROW */
+.month-row .cell-count {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+/* MONTH ROW */
 .date-row {
     background: #ffffff;
-    color: #4b5563;
+    color: #6b7280;
     transition: background 0.2s ease;
 }
 
 .date-row:hover {
-    background: #f9fafb;
+    background: #f8fafc;
 }
 
 .date-row .cell-label {
-    padding-left: 76px;
+    padding-left: 84px;
     font-weight: 500;
 }
 
-/* COUNT COLUMN */
-.cell-count {
-    text-align: right;
-    font-variant-numeric: tabular-nums;
-    font-weight: 600;
-    color: #111827;
+.date-row .cell-count {
+    font-size: 14px;
+    font-weight: 500;
+    color: #4b5563;
 }
 
 /* ICON */
@@ -157,8 +180,8 @@ body {
     width: 18px;
     color: #8b1e2d;
     font-size: 12px;
+    font-weight: 700;
     margin-right: 8px;
-    transition: transform 0.2s ease;
 }
 
 /* CONTAINERS */
@@ -167,7 +190,7 @@ body {
     display: none;
 }
 
-/* visual separators between year groups */
+/* visual separators between name groups */
 .year-wrapper {
     background: #fff;
 }
