@@ -1,5 +1,5 @@
 from flask import Flask, render_template, jsonify, request
-from services.data_services import (get_names, get_years_by_name, get_months_by_name_and_year,)
+from services.alert_service import AlertService
 
 app = Flask(__name__)
 
@@ -11,7 +11,7 @@ def index():
 
 @app.route("/api/names")
 def api_names():
-    return jsonify(get_names())
+    return jsonify(AlertService.get_names())
 
 
 @app.route("/api/years")
@@ -20,8 +20,8 @@ def api_years():
 
     if not selected_name:
         return jsonify([])
-    
-    return jsonify(get_years_by_name(selected_name))
+
+    return jsonify(AlertService.get_years_by_name(selected_name))
 
 
 @app.route("/api/months")
@@ -32,7 +32,7 @@ def api_months():
     if not selected_name or not selected_year:
         return jsonify([])
 
-    return jsonify(get_months_by_name_and_year(selected_name, selected_year))
+    return jsonify(AlertService.get_months_by_name_and_year(selected_name, selected_year))
 
 
 if __name__ == "__main__":
