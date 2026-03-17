@@ -35,5 +35,17 @@ def api_months():
     return jsonify(AlertService.get_months_by_name_and_year(selected_name, selected_year))
 
 
+@app.route("/api/dates")
+def api_dates():
+    selected_name = request.args.get("name", "")
+    selected_year = request.args.get("year", "")
+    selected_month = request.args.get("month", "")
+
+    if not selected_name or not selected_year or not selected_month:
+        return jsonify([])
+
+    return jsonify(AlertService.get_dates(selected_name, selected_year, selected_month))
+
+
 if __name__ == "__main__":
     app.run(debug=True)

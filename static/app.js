@@ -34,7 +34,9 @@ async function loadNames() {
 
             if (yearContainer.style.display === "none") {
                 if (!yearsLoaded) {
-                    const yearResponse = await fetch(`/api/years?name=${encodeURIComponent(nameItem.NAME)}`);
+                    const yearResponse = await fetch(
+                        `/api/years?name=${encodeURIComponent(nameItem.NAME)}`
+                    );
                     const years = await yearResponse.json();
 
                     yearContainer.innerHTML = "";
@@ -78,12 +80,15 @@ async function loadNames() {
                                     monthContainer.innerHTML = "";
 
                                     months.forEach(monthItem => {
+                                        const monthWrapper = document.createElement("div");
+                                        monthWrapper.className = "date-wrapper";
+
                                         const monthRow = document.createElement("div");
                                         monthRow.className = "table-row date-row";
 
                                         const monthLeft = document.createElement("div");
                                         monthLeft.className = "cell cell-label";
-                                        monthLeft.textContent = monthItem.month;
+                                        monthLeft.innerHTML = `<span class="expand-icon">▶</span> ${monthItem.month}`;
 
                                         const monthRight = document.createElement("div");
                                         monthRight.className = "cell cell-count";
@@ -92,7 +97,58 @@ async function loadNames() {
                                         monthRow.appendChild(monthLeft);
                                         monthRow.appendChild(monthRight);
 
-                                        monthContainer.appendChild(monthRow);
+                                        const dateContainer = document.createElement("div");
+                                        dateContainer.className = "day-container";
+                                        dateContainer.style.display = "none";
+
+                                        let datesLoaded = false;
+
+                                        monthRow.addEventListener("click", async (event) => {
+                                            event.stopPropagation();
+
+                                            const monthIcon = monthLeft.querySelector(".expand-icon");
+
+                                            if (dateContainer.style.display === "none") {
+                                                if (!datesLoaded) {
+                                                    const dateResponse = await fetch(
+                                                        `/api/dates?name=${encodeURIComponent(nameItem.NAME)}&year=${encodeURIComponent(yearItem.year)}&month=${encodeURIComponent(monthItem.month_number)}`
+                                                    );
+                                                    const dates = await dateResponse.json();
+
+                                                    dateContainer.innerHTML = "";
+
+                                                    dates.forEach(dateItem => {
+                                                        const dateRow = document.createElement("div");
+                                                        dateRow.className = "table-row day-row";
+
+                                                        const dateLeft = document.createElement("div");
+                                                        dateLeft.className = "cell cell-label";
+                                                        dateLeft.textContent = dateItem.date;
+
+                                                        const dateRight = document.createElement("div");
+                                                        dateRight.className = "cell cell-count";
+                                                        dateRight.textContent = Number(dateItem.total_count).toLocaleString();
+
+                                                        dateRow.appendChild(dateLeft);
+                                                        dateRow.appendChild(dateRight);
+
+                                                        dateContainer.appendChild(dateRow);
+                                                    });
+
+                                                    datesLoaded = true;
+                                                }
+
+                                                dateContainer.style.display = "block";
+                                                monthIcon.textContent = "▼";
+                                            } else {
+                                                dateContainer.style.display = "none";
+                                                monthIcon.textContent = "▶";
+                                            }
+                                        });
+
+                                        monthWrapper.appendChild(monthRow);
+                                        monthWrapper.appendChild(dateContainer);
+                                        monthContainer.appendChild(monthWrapper);
                                     });
 
                                     monthsLoaded = true;

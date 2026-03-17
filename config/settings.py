@@ -1,17 +1,14 @@
 from pathlib import Path
 import os
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+DATA_SOURCE = os.getenv("DATA_SOURCE", "detica_parquet")
 
-DATA_SOURCE = os.getenv("DATA_SOURCE", "csv")   # change manually later: "csv", "parquet", or "oracle"
+ALERT_HEADER_PATH = Path(
+    os.getenv("ALERT_HEADER_PATH", "/parquet/current/DETICA/alert_header.parquet")
+)
 
-CSV_PATH = BASE_DIR / "odd_alerts.csv"
-PARQUET_PATH = BASE_DIR / "odd_alerts.parquet"
+WORKFLOW_STATUSES_PATH = Path(
+    os.getenv("WORKFLOW_STATUSES_PATH", "/parquet/current/DETICA/workflow_statuses.parquet")
+)
 
-ORACLE_CONFIG = {
-    "username": os.getenv("ORACLE_USERNAME", ""),
-    "password": os.getenv("ORACLE_PASSWORD", ""),
-    "host": os.getenv("ORACLE_HOST", ""),
-    "port": os.getenv("ORACLE_PORT", ""),
-    "service_name": os.getenv("ORACLE_SERVICE_NAME", ""),
-}
+ODD_EXCLUDED_DOMAIN = "SUSPICIOUS ACTIVITY"
