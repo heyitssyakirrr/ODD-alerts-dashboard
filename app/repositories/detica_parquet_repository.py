@@ -1,24 +1,23 @@
 from functools import lru_cache
+
 import polars as pl
 
-from config.settings import (
+from app.config.settings import (
     ALERT_HEADER_PATH,
     WORKFLOW_STATUSES_PATH,
     ODD_EXCLUDED_DOMAIN,
 )
-from repositories.base_repository import BaseAlertRepository
+from app.repositories.base_repository import BaseAlertRepository
 
 
 class DeticaParquetAlertRepository(BaseAlertRepository):
     """
     Read raw DETICA parquet files and transform them into the same logical shape
-    as the old processed CSV:
-        year_creation | mth_creation | NAME | Count
+    as the dashboard dataset:
+        year_creation | mth_creation | dt_creation | NAME | Count
     """
 
     def load_data(self) -> pl.DataFrame:
-        # Cached so the app does not reprocess parquet on every endpoint call.
-        # Restart the Flask app to refresh the cache after source data changes.
         return _load_detica_dashboard_df()
 
     def _read_alert_header(self) -> pl.DataFrame:
@@ -84,29 +83,31 @@ class DeticaParquetAlertRepository(BaseAlertRepository):
 
     @staticmethod
     def _creation_timestamp_expr(dtype: pl.DataType) -> pl.Expr:
-        # If parquet already stores a datetime/date type, use it directly.
-        if dtype in (pl.Date, pl.Datetime):
+        if dtype == pl.Date:
             return pl.col("WW_CREATION_TIMESTAMP").cast(pl.Datetime)
 
-        # Otherwise, try to parse strings flexibly.
-        return pl.col("WW_CREATION_TIMESTAMP").cast(pl.Utf8).str.strptime(
-            pl.Datetime,
-            strict=False,
+        if isinstance(dtype, pl.Datetime):
+            return pl.col("WW_CREATION_TIMESTAMP")
+
+        return (
+            pl.col("WW_CREATION_TIMESTAMP")
+            .cast(pl.Utf8)
+            .str.strip_chars()
+            .str.strptime(pl.Datetime, strict=False)
         )
 
 
 @lru_cache(maxsize=1)
 def _load_detica_dashboard_df() -> pl.DataFrame:
-    repo = DeticaParquetAlertRepository.__new__(DeticaParquetAlertRepository)
+    repository = DeticaParquetAlertRepository()
 
-    alert_header = repo._read_alert_header()
-    workflow_statuses = repo._read_workflow_statuses()
+    alert_header = repository._read_alert_header()
+    workflow_statuses = repository._read_workflow_statuses()
 
-    repo._validate_alert_header_schema(alert_header)
-    repo._validate_workflow_statuses_schema(workflow_statuses)
+    repository._validate_alert_header_schema(alert_header)
+    repository._validate_workflow_statuses_schema(workflow_statuses)
 
-    odd_alerts = repo._filter_odd_alerts(alert_header)
-    joined = repo._join_status_name(odd_alerts, workflow_statuses)
-    result = repo._aggregate_dashboard_data(joined)
+    filtered_alerts = repository._filter_odd_alerts(alert_header)
+    joined_df = repository._join_status_name(filtered_alerts, workflow_statuses)
 
-    return result
+    return repository._aggregate_dashboard_data(joined_df)

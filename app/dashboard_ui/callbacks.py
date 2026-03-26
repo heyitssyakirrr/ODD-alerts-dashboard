@@ -2,14 +2,14 @@ import traceback
 
 from dash import Input, Output, State, html
 
-from services.alert_service import AlertService
-from dashboard_ui.figures import (
+from app.services.alert_service import AlertService
+from app.dashboard_ui.figures import (
     build_status_chart,
     build_trend_chart,
     build_yearly_chart,
     empty_figure,
 )
-from dashboard_ui.insights import (
+from app.dashboard_ui.insights import (
     build_status_insights,
     build_trend_insights,
     build_yearly_insights,

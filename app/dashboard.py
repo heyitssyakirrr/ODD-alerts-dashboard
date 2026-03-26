@@ -1,7 +1,7 @@
 from dash import Dash
 
-from dashboard_ui.layout import build_dashboard_layout
-from dashboard_ui.callbacks import register_dashboard_callbacks
+from app.dashboard_ui.layout import build_dashboard_layout
+from app.dashboard_ui.callbacks import register_dashboard_callbacks
 
 
 def create_dashboard(server):
@@ -12,7 +12,7 @@ def create_dashboard(server):
         requests_pathname_prefix="/dashboard/",
         suppress_callback_exceptions=True,
         external_stylesheets=[
-            "/static/style.css",
+            "/static/explorer.css",
             "/static/dashboard.css",
         ],
     )

@@ -1,14 +1,22 @@
 import plotly.express as px
 import plotly.graph_objects as go
 
-# Public Bank Enterprise Color Palette
 PB_RED = "#E2001A"
 PB_DARK_RED = "#990012"
 PB_YELLOW = "#FFC220"
 PB_DARK_GREY = "#374151"
 PB_LIGHT_GREY = "#9CA3AF"
 
-PB_COLOR_SEQUENCE = [PB_RED, PB_YELLOW, PB_DARK_GREY, PB_DARK_RED, PB_LIGHT_GREY, "#D1D5DB", "#1F2937"]
+PB_COLOR_SEQUENCE = [
+    PB_RED,
+    PB_YELLOW,
+    PB_DARK_GREY,
+    PB_DARK_RED,
+    PB_LIGHT_GREY,
+    "#D1D5DB",
+    "#1F2937",
+]
+
 
 def empty_figure(title: str):
     fig = go.Figure()
@@ -41,7 +49,10 @@ def apply_base_layout(fig, x_title=None, y_title=None, margin=None, show_legend=
         template="plotly_white",
         paper_bgcolor="#ffffff",
         plot_bgcolor="#ffffff",
-        font={"family": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif", "color": "#1f2937"},
+        font={
+            "family": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+            "color": "#1f2937",
+        },
         margin=margin or dict(l=50, r=20, t=15, b=40),
         xaxis_title=x_title,
         yaxis_title=y_title,
@@ -85,7 +96,7 @@ def build_trend_chart(df, trend_mode="total"):
             color="NAME",
             markers=True,
             category_orders={"period_label": ordered_periods},
-            color_discrete_sequence=PB_COLOR_SEQUENCE
+            color_discrete_sequence=PB_COLOR_SEQUENCE,
         )
 
         fig.update_traces(
@@ -202,7 +213,7 @@ def build_yearly_chart(df):
         x="Count",
         color="NAME",
         orientation="h",
-        color_discrete_sequence=PB_COLOR_SEQUENCE
+        color_discrete_sequence=PB_COLOR_SEQUENCE,
     )
 
     fig.update_layout(
@@ -210,7 +221,10 @@ def build_yearly_chart(df):
         template="plotly_white",
         paper_bgcolor="#ffffff",
         plot_bgcolor="#ffffff",
-        font={"family": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif", "color": "#1f2937"},
+        font={
+            "family": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+            "color": "#1f2937",
+        },
         margin=dict(l=55, r=35, t=10, b=105),
         xaxis_title="Accumulated Volume",
         yaxis_title="Financial Year",
@@ -234,7 +248,6 @@ def build_yearly_chart(df):
         gridcolor="#F3F4F6",
         zeroline=False,
         automargin=True,
-        # Extended range to give generous space for the text label on the right
         range=[0, max_total * 1.25 if max_total else 1],
     )
     fig.update_yaxes(
@@ -243,16 +256,15 @@ def build_yearly_chart(df):
         automargin=True,
     )
 
-    # Placing the text strictly outside the bar using middle right
     fig.add_scatter(
         y=total_per_year["year_creation"],
         x=total_per_year["YearTotal"],
-        text=[f"  {int(v):,}" for v in total_per_year["YearTotal"]], # Extra spacing via string formatting
+        text=[f"  {int(v):,}" for v in total_per_year["YearTotal"]],
         mode="text",
         textposition="middle right",
         showlegend=False,
         hoverinfo="skip",
-        textfont=dict(color="#111827", size=14, weight="bold") # High visibility dark text
+        textfont=dict(color="#111827", size=14),
     )
 
     fig.update_traces(

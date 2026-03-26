@@ -1,6 +1,8 @@
 import calendar
+
 import polars as pl
-from repositories import get_alert_repository
+
+from app.repositories import get_alert_repository
 
 
 class AlertService:
@@ -16,8 +18,7 @@ class AlertService:
             return []
 
         if isinstance(value, (list, tuple, set)):
-            normalized = [item for item in value if item not in (None, "", "ALL")]
-            return normalized
+            return [item for item in value if item not in (None, "", "ALL")]
 
         return [value]
 
@@ -56,17 +57,12 @@ class AlertService:
     @classmethod
     def get_names(cls):
         df = cls._load_df()
-
         return (
             df.group_by("NAME")
             .agg(pl.col("Count").sum().alias("total_count"))
             .sort("NAME")
             .to_dicts()
         )
-
-    # =========================
-    # DASHBOARD FILTER METHODS
-    # =========================
 
     @classmethod
     def get_available_years(cls, selected_names=None):
@@ -107,10 +103,6 @@ class AlertService:
             }
             for month in months
         ]
-
-    # =========================
-    # EXPLORER METHODS
-    # =========================
 
     @classmethod
     def get_explorer_years(cls, selected_name):
@@ -164,19 +156,14 @@ class AlertService:
             selected_months=selected_month,
         )
 
-        if df.is_empty():
-            return []
-
-        if "dt_creation" not in df.columns:
+        if df.is_empty() or "dt_creation" not in df.columns:
             return []
 
         result = (
             df.group_by("dt_creation")
             .agg(pl.col("Count").sum().alias("total_count"))
             .sort("dt_creation")
-            .with_columns(
-                pl.col("dt_creation").cast(pl.Utf8).alias("date")
-            )
+            .with_columns(pl.col("dt_creation").cast(pl.Utf8).alias("date"))
             .select(["date", "total_count"])
         )
 

@@ -1,5 +1,6 @@
 from dash import dcc, html
-from services.alert_service import AlertService
+from app.services.alert_service import AlertService
+
 
 def build_dashboard_layout():
     names = AlertService.get_names()
