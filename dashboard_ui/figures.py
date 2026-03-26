@@ -1,6 +1,14 @@
 import plotly.express as px
 import plotly.graph_objects as go
 
+# Public Bank Enterprise Color Palette
+PB_RED = "#E2001A"
+PB_DARK_RED = "#990012"
+PB_YELLOW = "#FFC220"
+PB_DARK_GREY = "#374151"
+PB_LIGHT_GREY = "#9CA3AF"
+
+PB_COLOR_SEQUENCE = [PB_RED, PB_YELLOW, PB_DARK_GREY, PB_DARK_RED, PB_LIGHT_GREY, "#D1D5DB", "#1F2937"]
 
 def empty_figure(title: str):
     fig = go.Figure()
@@ -13,13 +21,13 @@ def empty_figure(title: str):
         yaxis={"visible": False},
         annotations=[
             {
-                "text": "No data available",
+                "text": "No data available in current filter scope",
                 "xref": "paper",
                 "yref": "paper",
                 "x": 0.5,
                 "y": 0.5,
                 "showarrow": False,
-                "font": {"size": 16, "color": "#6b7280"},
+                "font": {"size": 15, "color": "#9CA3AF", "family": "-apple-system, sans-serif"},
             }
         ],
         margin=dict(l=30, r=20, t=15, b=30),
@@ -33,7 +41,7 @@ def apply_base_layout(fig, x_title=None, y_title=None, margin=None, show_legend=
         template="plotly_white",
         paper_bgcolor="#ffffff",
         plot_bgcolor="#ffffff",
-        font={"family": "Arial, sans-serif", "color": "#1f2937"},
+        font={"family": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif", "color": "#1f2937"},
         margin=margin or dict(l=50, r=20, t=15, b=40),
         xaxis_title=x_title,
         yaxis_title=y_title,
@@ -43,16 +51,16 @@ def apply_base_layout(fig, x_title=None, y_title=None, margin=None, show_legend=
     )
     fig.update_xaxes(
         showgrid=True,
-        gridcolor="#eef2f7",
+        gridcolor="#F3F4F6",
         zeroline=False,
-        linecolor="#d8dee9",
+        linecolor="#E5E7EB",
         automargin=True,
     )
     fig.update_yaxes(
         showgrid=True,
-        gridcolor="#eef2f7",
+        gridcolor="#F3F4F6",
         zeroline=False,
-        linecolor="#d8dee9",
+        linecolor="#E5E7EB",
         automargin=True,
     )
     return fig
@@ -77,6 +85,7 @@ def build_trend_chart(df, trend_mode="total"):
             color="NAME",
             markers=True,
             category_orders={"period_label": ordered_periods},
+            color_discrete_sequence=PB_COLOR_SEQUENCE
         )
 
         fig.update_traces(
@@ -92,14 +101,14 @@ def build_trend_chart(df, trend_mode="total"):
                 y=1.02,
                 xanchor="left",
                 x=0,
-                font=dict(size=10),
+                font=dict(size=11),
             )
         )
 
         apply_base_layout(
             fig,
-            x_title="Period",
-            y_title="Total Count",
+            x_title="Monitoring Period",
+            y_title="Alert Volume",
             margin=dict(l=55, r=20, t=30, b=55),
             show_legend=True,
         )
@@ -113,15 +122,15 @@ def build_trend_chart(df, trend_mode="total"):
         )
 
         fig.update_traces(
-            line=dict(width=3, color="#7c3aed"),
-            marker=dict(size=7, color="#2563eb"),
+            line=dict(width=3, color=PB_RED),
+            marker=dict(size=8, color=PB_YELLOW, line=dict(width=1, color=PB_DARK_RED)),
             hovertemplate="<b>%{x}</b><br>Total: %{y:,}<extra></extra>",
         )
 
         apply_base_layout(
             fig,
-            x_title="Period",
-            y_title="Total Count",
+            x_title="Monitoring Period",
+            y_title="Total Alert Volume",
             margin=dict(l=55, r=20, t=10, b=55),
             show_legend=False,
         )
@@ -149,14 +158,14 @@ def build_status_chart(df):
         y="Count",
     )
     fig.update_traces(
-        marker_color="#2563eb",
+        marker_color=PB_RED,
         hovertemplate="<b>%{x}</b><br>Total: %{y:,}<extra></extra>",
     )
 
     apply_base_layout(
         fig,
-        x_title="Status",
-        y_title="Total Count",
+        x_title="Alert Status",
+        y_title="Volume",
         margin=dict(l=60, r=20, t=10, b=110),
         show_legend=False,
     )
@@ -186,7 +195,6 @@ def build_yearly_chart(df):
     )
 
     max_total = total_per_year["YearTotal"].max() if not total_per_year.empty else 0
-    text_x = total_per_year["YearTotal"] + (max_total * 0.025 if max_total else 0)
 
     fig = px.bar(
         pdf,
@@ -194,6 +202,7 @@ def build_yearly_chart(df):
         x="Count",
         color="NAME",
         orientation="h",
+        color_discrete_sequence=PB_COLOR_SEQUENCE
     )
 
     fig.update_layout(
@@ -201,10 +210,10 @@ def build_yearly_chart(df):
         template="plotly_white",
         paper_bgcolor="#ffffff",
         plot_bgcolor="#ffffff",
-        font={"family": "Arial, sans-serif", "color": "#1f2937"},
+        font={"family": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif", "color": "#1f2937"},
         margin=dict(l=55, r=35, t=10, b=105),
-        xaxis_title="Total Count",
-        yaxis_title="Year",
+        xaxis_title="Accumulated Volume",
+        yaxis_title="Financial Year",
         yaxis=dict(categoryorder="category descending"),
         hovermode="closest",
         legend_title_text="",
@@ -215,17 +224,18 @@ def build_yearly_chart(df):
             y=-0.24,
             xanchor="left",
             x=0,
-            font=dict(size=10),
+            font=dict(size=11),
             itemwidth=65,
         ),
     )
 
     fig.update_xaxes(
         showgrid=True,
-        gridcolor="#eef2f7",
+        gridcolor="#F3F4F6",
         zeroline=False,
         automargin=True,
-        range=[0, max_total * 1.16 if max_total else 1],
+        # Extended range to give generous space for the text label on the right
+        range=[0, max_total * 1.25 if max_total else 1],
     )
     fig.update_yaxes(
         showgrid=False,
@@ -233,14 +243,16 @@ def build_yearly_chart(df):
         automargin=True,
     )
 
+    # Placing the text strictly outside the bar using middle right
     fig.add_scatter(
         y=total_per_year["year_creation"],
-        x=text_x,
-        text=[f"{int(v):,}" for v in total_per_year["YearTotal"]],
+        x=total_per_year["YearTotal"],
+        text=[f"  {int(v):,}" for v in total_per_year["YearTotal"]], # Extra spacing via string formatting
         mode="text",
-        textposition="middle left",
+        textposition="middle right",
         showlegend=False,
         hoverinfo="skip",
+        textfont=dict(color="#111827", size=14, weight="bold") # High visibility dark text
     )
 
     fig.update_traces(

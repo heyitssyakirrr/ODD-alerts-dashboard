@@ -3,38 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ODD Alerts Dashboard</title>
+    <title>Enterprise Detail Explorer | ODD Alerts</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <div class="page">
-        <header class="topbar">
-            <div>
-                <h1>ODD Alerts Detail Explorer</h1>
-                <p>Monitoring alert counts by name, year, month and date</p>
-            </div>
-            <a class="dashboard-link" href="/dashboard">Back to Dashboard</a>
-        </header>
-
-        <main class="content">
-            <section class="card">
-                <div class="card-header">
-                    <h2>Available Alert Statuses</h2>
-                    <p>Select a name to view yearly totals, monthly and daily counts.</p>
+    <div class="dashboard-shell">
+        <aside id="explorer-sidebar" class="dashboard-sidebar expanded">
+            <div class="sidebar-top">
+                <div class="sidebar-brand">
+                    <button id="explorer-sidebar-toggle" class="sidebar-toggle">☰</button>
+                    <div class="brand-text">
+                        <div class="brand-title">ODD Alerts</div>
+                        <div class="brand-subtitle">Enterprise Monitoring</div>
+                    </div>
                 </div>
+            </div>
+            <div class="sidebar-section-label">Navigation</div>
+            <nav class="sidebar-nav">
+                <a href="/dashboard/" class="sidebar-nav-link">
+                    <span class="nav-icon icon-home"></span>
+                    <span class="nav-text">Dashboard Overview</span>
+                </a>
+                <a href="/explorer" class="sidebar-nav-link active">
+                    <span class="nav-icon icon-search"></span>
+                    <span class="nav-text">Detail Explorer</span>
+                </a>
+            </nav>
+            <div class="sidebar-info-card">
+                <div class="sidebar-info-title">Quick Guide</div>
+                <ul class="sidebar-info-list">
+                    <li>Use filters to isolate specific status types or periods.</li>
+                    <li>Toggle 'Trend View' to compare individual workflows.</li>
+                    <li>Navigate to Explorer for deep daily data drill-down.</li>
+                </ul>
+            </div>
+        </aside>
 
-                <div class="summary-table">
-                    <div class="table-header">
-                        <div>Name / Year / Month / Date</div>
-                        <div>Total Count</div>
+        <main id="explorer-main" class="dashboard-main expanded">
+            <div class="dashboard-page-header">
+                <h1 class="dashboard-page-title">Data Detail Explorer</h1>
+                <p class="dashboard-page-subtitle">Enterprise Hierarchy: Status Level ➔ Financial Year ➔ Period ➔ Daily Volume</p>
+            </div>
+
+            <div class="content explorer-content">
+                <section class="card">
+                    <div class="card-header">
+                        <h2>Available Workflows & Statuses</h2>
+                        <p>Click on any status row to drill down into historical distributions.</p>
                     </div>
 
-                    <div id="yearList" class="table-body"></div>
-                </div>
-            </section>
+                    <div class="summary-table">
+                        <div class="table-header">
+                            <div>Hierarchy Classification</div>
+                            <div class="center-col">Total Occurrences</div>
+                        </div>
+
+                        <div id="yearList" class="table-body"></div>
+                    </div>
+                </section>
+            </div>
         </main>
     </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleBtn = document.getElementById('explorer-sidebar-toggle');
+            const sidebar = document.getElementById('explorer-sidebar');
+            const main = document.getElementById('explorer-main');
+
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', function() {
+                    if (sidebar.classList.contains('expanded')) {
+                        sidebar.classList.replace('expanded', 'collapsed');
+                        main.classList.replace('expanded', 'collapsed');
+                    } else {
+                        sidebar.classList.replace('collapsed', 'expanded');
+                        main.classList.replace('collapsed', 'expanded');
+                    }
+                });
+            }
+        });
+    </script>
     <script src="{{ url_for('static', filename='app.js') }}"></script>
 </body>
 </html>

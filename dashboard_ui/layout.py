@@ -1,7 +1,5 @@
 from dash import dcc, html
-
 from services.alert_service import AlertService
-
 
 def build_dashboard_layout():
     names = AlertService.get_names()
@@ -35,24 +33,23 @@ def build_dashboard_layout():
                             html.Div(
                                 className="sidebar-brand",
                                 children=[
-                                    html.Div("OA", className="brand-logo"),
+                                    html.Button(
+                                        "☰",
+                                        id="sidebar-toggle",
+                                        n_clicks=0,
+                                        className="sidebar-toggle",
+                                    ),
                                     html.Div(
                                         className="brand-text",
                                         children=[
                                             html.Div("ODD Alerts", className="brand-title"),
                                             html.Div(
-                                                "Enterprise Monitoring Dashboard",
+                                                "Enterprise Monitoring",
                                                 className="brand-subtitle",
                                             ),
                                         ],
                                     ),
                                 ],
-                            ),
-                            html.Button(
-                                "☰",
-                                id="sidebar-toggle",
-                                n_clicks=0,
-                                className="sidebar-toggle",
                             ),
                         ],
                     ),
@@ -61,12 +58,18 @@ def build_dashboard_layout():
                         className="sidebar-nav",
                         children=[
                             html.A(
-                                "Dashboard",
+                                children=[
+                                    html.Span(className="nav-icon icon-home"),
+                                    html.Span("Dashboard Overview", className="nav-text")
+                                ],
                                 href="/dashboard/",
                                 className="sidebar-nav-link active",
                             ),
                             html.A(
-                                "Explorer",
+                                children=[
+                                    html.Span(className="nav-icon icon-search"),
+                                    html.Span("Detail Explorer", className="nav-text")
+                                ],
                                 href="/explorer",
                                 className="sidebar-nav-link",
                             ),
@@ -75,13 +78,13 @@ def build_dashboard_layout():
                     html.Div(
                         className="sidebar-info-card",
                         children=[
-                            html.Div("Dashboard Notes", className="sidebar-info-title"),
+                            html.Div("Quick Guide", className="sidebar-info-title"),
                             html.Ul(
                                 className="sidebar-info-list",
                                 children=[
-                                    html.Li("Use multi-select filters to narrow the analysis."),
-                                    html.Li("Switch trend mode between total and per-status comparison."),
-                                    html.Li("Use Explorer for detailed date drilldown."),
+                                    html.Li("Use filters to isolate specific status types or periods."),
+                                    html.Li("Toggle 'Trend View' to compare individual workflows."),
+                                    html.Li("Navigate to Explorer for deep daily data drill-down."),
                                 ],
                             ),
                         ],
@@ -97,11 +100,11 @@ def build_dashboard_layout():
                         className="dashboard-page-header",
                         children=[
                             html.H1(
-                                "ODD Alerts Monitoring Dashboard",
+                                "Alerts Monitoring Dashboard",
                                 className="dashboard-page-title",
                             ),
                             html.P(
-                                "Operational workload, bottleneck signals, and long-term movement for HQ monitoring.",
+                                "Track operational workloads, identify bottlenecks, and monitor long-term trends.",
                                 className="dashboard-page-subtitle",
                             ),
                         ],
@@ -118,7 +121,7 @@ def build_dashboard_layout():
                             html.Div(
                                 className="filter-group filter-group-wide",
                                 children=[
-                                    html.Label("Status", className="filter-label"),
+                                    html.Label("Alert Status", className="filter-label"),
                                     dcc.Dropdown(
                                         id="status-filter",
                                         options=status_options,
@@ -160,12 +163,12 @@ def build_dashboard_layout():
                             html.Div(
                                 className="filter-group filter-group-mode",
                                 children=[
-                                    html.Label("Trend View", className="filter-label"),
+                                    html.Label("Trend View Mode", className="filter-label"),
                                     dcc.RadioItems(
                                         id="trend-mode",
                                         options=[
-                                            {"label": "Total Trend", "value": "total"},
-                                            {"label": "Compare Status", "value": "compare"},
+                                            {"label": "Total Aggregate", "value": "total"},
+                                            {"label": "Status Comparison", "value": "compare"},
                                         ],
                                         value="total",
                                         className="trend-mode-toggle",
@@ -182,7 +185,7 @@ def build_dashboard_layout():
                     html.Section(
                         className="chart-section-card chart-section-large",
                         children=[
-                            html.Div("Monthly Trend", className="section-card-title"),
+                            html.Div("Monthly Workflow Trend", className="section-card-title"),
                             html.Div(
                                 className="trend-content-grid",
                                 children=[
@@ -199,7 +202,7 @@ def build_dashboard_layout():
                                     html.Div(
                                         className="trend-insight-panel",
                                         children=[
-                                            html.Div("Insights", className="insight-title"),
+                                            html.Div("Automated Insights", className="insight-title"),
                                             html.Ul(id="trend-insights", className="insight-list"),
                                         ],
                                     ),
@@ -224,14 +227,14 @@ def build_dashboard_layout():
                                                     dcc.Graph(
                                                         id="status-chart",
                                                         config={"displaylogo": False, "responsive": True},
-                                                        className="dashboard-graph",
+                                                        className="dashboard-graph side-dashboard-graph",
                                                     ),
                                                 ],
                                             ),
                                             html.Div(
                                                 className="side-insight-panel",
                                                 children=[
-                                                    html.Div("Insights", className="insight-title"),
+                                                    html.Div("Volume Analysis", className="insight-title"),
                                                     html.Ul(id="status-insights", className="insight-list"),
                                                 ],
                                             ),
@@ -244,7 +247,7 @@ def build_dashboard_layout():
                                 children=[
                                     html.Div("Yearly Breakdown", className="section-card-title"),
                                     html.Div(
-                                        className="side-insight-grid yearly-side-insight-grid",
+                                        className="side-insight-grid",
                                         children=[
                                             html.Div(
                                                 className="side-chart-panel",
@@ -252,14 +255,14 @@ def build_dashboard_layout():
                                                     dcc.Graph(
                                                         id="yearly-chart",
                                                         config={"displaylogo": False, "responsive": True},
-                                                        className="dashboard-graph",
+                                                        className="dashboard-graph side-dashboard-graph",
                                                     ),
                                                 ],
                                             ),
                                             html.Div(
                                                 className="side-insight-panel",
                                                 children=[
-                                                    html.Div("Insights", className="insight-title"),
+                                                    html.Div("Year-over-Year", className="insight-title"),
                                                     html.Ul(id="yearly-insights", className="insight-list"),
                                                 ],
                                             ),

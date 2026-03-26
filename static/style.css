@@ -1,65 +1,37 @@
-* {
-    box-sizing: border-box;
-}
+/* =========================
+   EXPLORER TABLE SPECIFIC
+========================= */
 
-body {
+.content.explorer-content {
+    max-width: 100%; /* Take full advantage of the main dashboard width */
     margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
-    background: #f4f6f8;
-    color: #1f2937;
-}
-
-.page {
-    min-height: 100vh;
-}
-
-.topbar {
-    background: linear-gradient(90deg, #8b1e2d, #a32638);
-    color: white;
-    padding: 24px 32px;
-    border-bottom: 4px solid #6f1723;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-}
-
-.topbar h1 {
-    margin: 0;
-    font-size: 28px;
-    font-weight: 700;
-}
-
-.topbar p {
-    margin: 6px 0 0;
-    font-size: 14px;
-    opacity: 0.95;
-}
-
-.content {
-    padding: 32px;
+    padding: 0;
 }
 
 .card {
     background: white;
-    border-radius: 14px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
     overflow: hidden;
-    border: 1px solid #e5e7eb;
+    border: 1px solid #E5E7EB;
 }
 
 .card-header {
-    padding: 24px 24px 16px;
-    border-bottom: 1px solid #e5e7eb;
-    background: #fcfcfd;
+    padding: 24px 28px 20px;
+    border-bottom: 1px solid #E5E7EB;
+    background: #ffffff;
 }
 
 .card-header h2 {
     margin: 0;
-    font-size: 22px;
-    color: #8b1e2d;
+    font-size: 20px;
+    color: #111827;
+    font-weight: 800;
 }
 
 .card-header p {
     margin: 6px 0 0;
-    color: #6b7280;
+    color: #6B7280;
     font-size: 14px;
 }
 
@@ -67,30 +39,39 @@ body {
     width: 100%;
 }
 
+/* Expanded layout to give room, centering the right column */
 .table-header,
 .table-row {
     display: grid;
-    grid-template-columns: 1fr 180px;
+    grid-template-columns: 1fr 250px; 
     align-items: center;
 }
 
 .table-header {
-    background: #f3f4f6;
-    color: #374151;
-    font-weight: 700;
-    border-bottom: 1px solid #d1d5db;
-    font-size: 15px;
+    background: linear-gradient(90deg, #A80519, #8A0303); /* PB Vibrant Red Header */
+    color: #FFC220; /* PB Gold Text */
+    font-weight: 800;
+    font-size: 13px;
     text-transform: uppercase;
-    letter-spacing: 0.4px;
+    letter-spacing: 0.8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    position: relative;
+    z-index: 2;
 }
 
 .table-header > div,
 .cell {
-    padding: 18px 24px;
+    padding: 16px 28px;
 }
 
-.table-row {
-    border-bottom: 1px solid #eceff3;
+/* Force Center Alignment for the numbers column */
+.center-col, 
+.cell-count {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.2px;
 }
 
 .cell-label {
@@ -98,243 +79,133 @@ body {
     align-items: center;
 }
 
-.cell-count {
-    text-align: right;
-    font-variant-numeric: tabular-nums;
-    letter-spacing: 0.2px;
-}
+/* =========================
+   DRILL-DOWN ROW STYLING
+========================= */
 
-/* NAME ROW */
+/* 1. NAME ROW (Level 1) */
 .year-row {
     cursor: pointer;
-    background: #fdf2f4;
+    background: #FFF1F2; /* Soft red tint */
     font-weight: 700;
-    font-size: 16px;
-    color: #7f1d2d;
+    font-size: 15px;
+    color: #8A0303;
+    border-bottom: 2px solid #FECDD3;
     transition: background 0.2s ease;
 }
 
 .year-row:hover {
-    background: #fbe7eb;
+    background: #FEE2E2;
 }
 
 .year-row .cell-label {
-    border-left: 5px solid #8b1e2d;
-    padding-left: 20px;
+    border-left: 6px solid #E2001A;
+    padding-left: 22px;
 }
 
 .year-row .cell-count {
     font-size: 16px;
-    font-weight: 700;
-    color: #7f1d2d;
+    font-weight: 800;
+    color: #8A0303;
 }
 
-/* YEAR ROW */
+/* 2. YEAR ROW (Level 2) */
 .month-row {
     cursor: pointer;
-    background: #f8fafc;
+    background: #FFFAF0; /* Warm highlight */
     font-weight: 600;
-    color: #334155;
+    color: #92400E;
+    border-bottom: 1px solid #FEF3C7;
     transition: background 0.2s ease;
 }
 
 .month-row:hover {
-    background: #eef2f7;
+    background: #FEF3C7;
 }
 
 .month-row .cell-label {
-    padding-left: 48px;
+    padding-left: 50px;
 }
 
 .month-row .cell-count {
     font-size: 15px;
-    font-weight: 600;
-    color: #1f2937;
+    font-weight: 700;
+    color: #92400E;
 }
 
-/* MONTH ROW */
+/* 3. MONTH ROW (Level 3) */
 .date-row {
+    cursor: pointer;
     background: #ffffff;
-    color: #6b7280;
+    color: #374151;
+    font-weight: 600;
+    border-bottom: 1px solid #E5E7EB;
     transition: background 0.2s ease;
 }
 
 .date-row:hover {
-    background: #f8fafc;
+    background: #F9FAFB;
 }
 
 .date-row .cell-label {
-    padding-left: 84px;
-    font-weight: 500;
+    padding-left: 78px;
 }
 
 .date-row .cell-count {
     font-size: 14px;
-    font-weight: 500;
-    color: #4b5563;
+    font-weight: 600;
 }
 
-/* DATE ROW */
+/* 4. DATE ROW (Level 4) */
 .day-row {
-    background: #f9fafb;
-    color: #4b5563;
-    transition: background 0.2s ease;
+    background: #F3F4F6;
+    color: #4B5563;
+    border-bottom: 1px solid #E5E7EB;
 }
 
 .day-row:hover {
-    background: #f3f4f6;
+    background: #E5E7EB;
 }
 
 .day-row .cell-label {
-    padding-left: 120px;
+    padding-left: 106px;
     font-weight: 500;
 }
 
 .day-row .cell-count {
     font-size: 14px;
-    font-weight: 500;
-    color: #374151;
+    font-weight: 600;
 }
 
 /* ICON */
 .expand-icon {
     display: inline-block;
-    width: 18px;
-    color: #8b1e2d;
-    font-size: 12px;
-    font-weight: 700;
-    margin-right: 8px;
+    width: 20px;
+    color: #E2001A;
+    font-size: 11px;
+    margin-right: 10px;
+    transition: transform 0.2s;
 }
 
 /* CONTAINERS */
 .month-container,
-.date-container {
+.date-container,
+.day-container {
     display: none;
 }
 
-/* visual separators between name groups */
 .year-wrapper {
     background: #fff;
 }
 
 .year-wrapper + .year-wrapper {
-    border-top: 8px solid #f4f6f8;
+    border-top: 10px solid #F4F6F8; /* Distinct separation between status blocks */
 }
 
-/* remove harsh final border */
+/* Clean up final borders */
 .year-wrapper:last-child .date-row:last-child,
 .year-wrapper:last-child .month-row:last-child,
-.year-wrapper:last-child .year-row:last-child {
+.year-wrapper:last-child .year-row:last-child,
+.year-wrapper:last-child .day-row:last-child {
     border-bottom: none;
-}
-
-/* DASHBOARD */
-.dash-page {
-    padding: 24px;
-    background: #f4f6f8;
-    min-height: 100vh;
-}
-
-.dash-header {
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-}
-
-.explorer-link {
-    display: inline-block;
-    background: #8b1e2d;
-    color: white;
-    text-decoration: none;
-    padding: 10px 14px;
-    border-radius: 8px;
-    font-weight: 700;
-    white-space: nowrap;
-}
-
-.explorer-link:hover {
-    background: #6f1723;
-}
-
-.dash-header h1 {
-    margin: 0;
-    color: #8b1e2d;
-}
-
-.dash-header p {
-    margin-top: 8px;
-    color: #6b7280;
-}
-
-.dash-filter-row {
-    margin-bottom: 20px;
-}
-
-.dash-filter-card {
-    background: white;
-    padding: 16px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-    border: 1px solid #e5e7eb;
-    max-width: 420px;
-}
-
-.dash-kpi-row {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(180px, 1fr));
-    gap: 16px;
-    margin-bottom: 20px;
-}
-
-.dash-kpi-card {
-    background: white;
-    border-radius: 12px;
-    padding: 18px;
-    border: 1px solid #e5e7eb;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-}
-
-.dash-kpi-label {
-    font-size: 13px;
-    color: #6b7280;
-    margin-bottom: 8px;
-}
-
-.dash-kpi-value {
-    font-size: 28px;
-    font-weight: 700;
-    color: #8b1e2d;
-}
-
-.dash-chart-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(320px, 1fr));
-    gap: 20px;
-}
-
-.dash-chart-card {
-    background: white;
-    border-radius: 14px;
-    padding: 12px;
-    border: 1px solid #e5e7eb;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-}
-
-.dash-chart-card .js-plotly-plot,
-.dash-chart-card .plot-container {
-    width: 100%;
-}
-
-.dash-chart-card {
-    min-height: 380px;
-}
-
-.dash-chart-card .dash-graph {
-    height: 100%;
-}
-
-.Select-menu-outer {
-    z-index: 9999;
 }
