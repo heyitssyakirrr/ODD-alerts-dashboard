@@ -3,7 +3,7 @@
 ========================= */
 
 .content.explorer-content {
-    max-width: 100%; /* Take full advantage of the main dashboard width */
+    max-width: 100%;
     margin: 0;
     padding: 0;
 }
@@ -17,22 +17,23 @@
 }
 
 .card-header {
-    padding: 24px 28px 20px;
+    padding: 20px 24px 16px;
     border-bottom: 1px solid #E5E7EB;
     background: #ffffff;
 }
 
 .card-header h2 {
     margin: 0;
-    font-size: 20px;
+    font-size: 18px;
     color: #111827;
     font-weight: 800;
 }
 
 .card-header p {
-    margin: 6px 0 0;
+    margin: 5px 0 0;
     color: #6B7280;
-    font-size: 14px;
+    font-size: 13px;
+    line-height: 1.45;
 }
 
 .summary-table {
@@ -43,13 +44,13 @@
 .table-header,
 .table-row {
     display: grid;
-    grid-template-columns: 1fr 250px; 
+    grid-template-columns: 1fr 250px;
     align-items: center;
 }
 
 .table-header {
-    background: linear-gradient(90deg, #A80519, #8A0303); /* PB Vibrant Red Header */
-    color: #FFC220; /* PB Gold Text */
+    background: linear-gradient(90deg, #A80519, #8A0303);
+    color: #FFC220;
     font-weight: 800;
     font-size: 13px;
     text-transform: uppercase;
@@ -65,7 +66,7 @@
 }
 
 /* Force Center Alignment for the numbers column */
-.center-col, 
+.center-col,
 .cell-count {
     text-align: center;
     display: flex;
@@ -86,7 +87,7 @@
 /* 1. NAME ROW (Level 1) */
 .year-row {
     cursor: pointer;
-    background: #FFF1F2; /* Soft red tint */
+    background: #FFF1F2;
     font-weight: 700;
     font-size: 15px;
     color: #8A0303;
@@ -112,7 +113,7 @@
 /* 2. YEAR ROW (Level 2) */
 .month-row {
     cursor: pointer;
-    background: #FFFAF0; /* Warm highlight */
+    background: #FFFAF0;
     font-weight: 600;
     color: #92400E;
     border-bottom: 1px solid #FEF3C7;
@@ -199,7 +200,7 @@
 }
 
 .year-wrapper + .year-wrapper {
-    border-top: 10px solid #F4F6F8; /* Distinct separation between status blocks */
+    border-top: 10px solid #F4F6F8;
 }
 
 /* Clean up final borders */

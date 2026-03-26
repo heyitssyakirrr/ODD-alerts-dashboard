@@ -97,15 +97,27 @@ def build_dashboard_layout():
                 className="dashboard-main expanded",
                 children=[
                     html.Div(
-                        className="dashboard-page-header",
+                        className="dashboard-page-header hero-header",
                         children=[
-                            html.H1(
-                                "Alerts Monitoring Dashboard",
-                                className="dashboard-page-title",
-                            ),
-                            html.P(
-                                "Track operational workloads, identify bottlenecks, and monitor long-term trends.",
-                                className="dashboard-page-subtitle",
+                            html.Div(
+                                className="hero-header-content",
+                                children=[
+                                    html.Div(
+                                        className="hero-badge",
+                                        children=[
+                                            html.Span(className="hero-badge-dot"),
+                                            html.Span("Operational Intelligence"),
+                                        ],
+                                    ),
+                                    html.H1(
+                                        "Alerts Monitoring Dashboard",
+                                        className="dashboard-page-title hero-title",
+                                    ),
+                                    html.P(
+                                        "Track operational workloads, identify bottlenecks, and monitor long-term trends across workflow statuses, periods, and yearly activity.",
+                                        className="dashboard-page-subtitle hero-subtitle",
+                                    ),
+                                ],
                             ),
                         ],
                     ),
@@ -114,9 +126,10 @@ def build_dashboard_layout():
                         className="filter-bar-card",
                         children=[
                             html.A(
-                                "Reset Filters",
+                                html.Span(className="reset-filter-icon"),
                                 href="/dashboard/",
-                                className="reset-filter-link",
+                                className="reset-filter-link icon-only",
+                                title="Reset filters",
                             ),
                             html.Div(
                                 className="filter-group filter-group-wide",
