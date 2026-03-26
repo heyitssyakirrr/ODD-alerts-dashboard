@@ -227,3 +227,114 @@ body {
 .year-wrapper:last-child .year-row:last-child {
     border-bottom: none;
 }
+
+/* DASHBOARD */
+.dash-page {
+    padding: 24px;
+    background: #f4f6f8;
+    min-height: 100vh;
+}
+
+.dash-header {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.explorer-link {
+    display: inline-block;
+    background: #8b1e2d;
+    color: white;
+    text-decoration: none;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.explorer-link:hover {
+    background: #6f1723;
+}
+
+.dash-header h1 {
+    margin: 0;
+    color: #8b1e2d;
+}
+
+.dash-header p {
+    margin-top: 8px;
+    color: #6b7280;
+}
+
+.dash-filter-row {
+    margin-bottom: 20px;
+}
+
+.dash-filter-card {
+    background: white;
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    border: 1px solid #e5e7eb;
+    max-width: 420px;
+}
+
+.dash-kpi-row {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.dash-kpi-card {
+    background: white;
+    border-radius: 12px;
+    padding: 18px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.dash-kpi-label {
+    font-size: 13px;
+    color: #6b7280;
+    margin-bottom: 8px;
+}
+
+.dash-kpi-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: #8b1e2d;
+}
+
+.dash-chart-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(320px, 1fr));
+    gap: 20px;
+}
+
+.dash-chart-card {
+    background: white;
+    border-radius: 14px;
+    padding: 12px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.dash-chart-card .js-plotly-plot,
+.dash-chart-card .plot-container {
+    width: 100%;
+}
+
+.dash-chart-card {
+    min-height: 380px;
+}
+
+.dash-chart-card .dash-graph {
+    height: 100%;
+}
+
+.Select-menu-outer {
+    z-index: 9999;
+}

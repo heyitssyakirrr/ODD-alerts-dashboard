@@ -4,4 +4,4 @@ import polars as pl
 class BaseAlertRepository(ABC):
     @abstractmethod
     def load_data(self) -> pl.DataFrame:
-        pass
+        raise NotImplementedError

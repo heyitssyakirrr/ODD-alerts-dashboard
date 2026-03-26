@@ -1,13 +1,61 @@
-import polars as pl
 import calendar
+import polars as pl
 from repositories import get_alert_repository
 
 
 class AlertService:
+    _repository = get_alert_repository()
+
+    @classmethod
+    def _load_df(cls) -> pl.DataFrame:
+        return cls._repository.load_data()
 
     @staticmethod
-    def get_names():
-        df = get_alert_repository().load_data()
+    def _normalize_to_list(value):
+        if value in (None, "", "ALL"):
+            return []
+
+        if isinstance(value, (list, tuple, set)):
+            normalized = [item for item in value if item not in (None, "", "ALL")]
+            return normalized
+
+        return [value]
+
+    @classmethod
+    def _apply_filters(
+        cls,
+        df: pl.DataFrame,
+        selected_names=None,
+        selected_years=None,
+        selected_months=None,
+    ) -> pl.DataFrame:
+        names = cls._normalize_to_list(selected_names)
+        years = cls._normalize_to_list(selected_years)
+        months = cls._normalize_to_list(selected_months)
+
+        if names:
+            names = [str(name).strip() for name in names]
+            df = df.filter(pl.col("NAME").is_in(names))
+
+        if years:
+            try:
+                years = [int(year) for year in years]
+            except (TypeError, ValueError):
+                return df.head(0)
+            df = df.filter(pl.col("year_creation").is_in(years))
+
+        if months:
+            try:
+                months = [int(month) for month in months]
+            except (TypeError, ValueError):
+                return df.head(0)
+            df = df.filter(pl.col("mth_creation").is_in(months))
+
+        return df
+
+    @classmethod
+    def get_names(cls):
+        df = cls._load_df()
 
         return (
             df.group_by("NAME")
@@ -16,84 +64,166 @@ class AlertService:
             .to_dicts()
         )
 
-    @staticmethod
-    def get_years_by_name(selected_name):
-        if not selected_name:
-            return []
+    @classmethod
+    def get_available_years(cls, selected_names=None):
+        df = cls._apply_filters(cls._load_df(), selected_names=selected_names)
 
-        df = get_alert_repository().load_data()
-        selected_name = str(selected_name).strip()
-
-        result = (
-            df.filter(pl.col("NAME") == selected_name)
-            .group_by("year_creation")
-            .agg(pl.col("Count").sum().alias("total_count"))
-            .sort("year_creation", descending=True)
-            .to_dicts()
+        years = (
+            df.select("year_creation")
+            .drop_nulls()
+            .unique()
+            .sort("year_creation")
+            .to_series()
+            .to_list()
         )
 
-        return [
-            {"year": row["year_creation"], "total_count": row["total_count"]}
-            for row in result
-        ]
+        return [int(year) for year in years]
 
-    @staticmethod
-    def get_months_by_name_and_year(selected_name, selected_year):
-        if not selected_name or selected_year in (None, ""):
-            return []
+    @classmethod
+    def get_available_months(cls, selected_names=None, selected_years=None):
+        df = cls._apply_filters(
+            cls._load_df(),
+            selected_names=selected_names,
+            selected_years=selected_years,
+        )
 
-        selected_name = str(selected_name).strip()
-
-        try:
-            selected_year = int(selected_year)
-        except (TypeError, ValueError):
-            return []
-
-        df = get_alert_repository().load_data()
-
-        result = (
-            df.filter(
-                (pl.col("NAME") == selected_name)
-                & (pl.col("year_creation") == selected_year)
-            )
-            .group_by("mth_creation")
-            .agg(pl.col("Count").sum().alias("total_count"))
+        months = (
+            df.select("mth_creation")
+            .drop_nulls()
+            .unique()
             .sort("mth_creation")
-            .to_dicts()
+            .to_series()
+            .to_list()
         )
 
         return [
-            {"month": calendar.month_name[row["mth_creation"]], "month_number": row["mth_creation"], "total_count": row["total_count"]}
-            for row in result
+            {
+                "label": calendar.month_name[int(month)],
+                "value": int(month),
+            }
+            for month in months
         ]
-    
-    @staticmethod
-    def get_dates(selected_name, selected_year, selected_month):
-        if not selected_name or selected_year in (None, "") or selected_month in (None, ""):
-            return []
 
-        selected_name = str(selected_name).strip()
+    @classmethod
+    def get_kpis(cls, selected_names=None, selected_years=None, selected_months=None):
+        df = cls._apply_filters(
+            cls._load_df(),
+            selected_names=selected_names,
+            selected_years=selected_years,
+            selected_months=selected_months,
+        )
 
-        try:
-            selected_year = int(selected_year)
-        except (TypeError, ValueError):
-            return []
+        if df.is_empty():
+            return {
+                "total_alerts": 0,
+                "open_alerts": 0,
+                "closure_rate": 0.0,
+                "escalation_rate": 0.0,
+            }
 
-        df = get_alert_repository().load_data()
+        total_alerts = int(df["Count"].sum())
 
-        result = (
-            df.filter(
-                (pl.col("NAME") == selected_name)
-                & (pl.col("year_creation") == int(selected_year))
-                & (pl.col("mth_creation") == int(selected_month))
+        closed_df = df.filter(pl.col("NAME").cast(pl.Utf8).str.starts_with("Closed"))
+        open_df = df.filter(~pl.col("NAME").cast(pl.Utf8).str.starts_with("Closed"))
+        escalated_df = df.filter(pl.col("NAME") == "Escalated")
+
+        closed_alerts = int(closed_df["Count"].sum()) if closed_df.height else 0
+        open_alerts = int(open_df["Count"].sum()) if open_df.height else 0
+        escalated_alerts = int(escalated_df["Count"].sum()) if escalated_df.height else 0
+
+        closure_rate = (closed_alerts / total_alerts * 100) if total_alerts else 0.0
+        escalation_rate = (escalated_alerts / total_alerts * 100) if total_alerts else 0.0
+
+        return {
+            "total_alerts": total_alerts,
+            "open_alerts": open_alerts,
+            "closure_rate": round(closure_rate, 1),
+            "escalation_rate": round(escalation_rate, 1),
+        }
+
+    @classmethod
+    def get_status_distribution_df(
+        cls,
+        selected_names=None,
+        selected_years=None,
+        selected_months=None,
+    ) -> pl.DataFrame:
+        df = cls._apply_filters(
+            cls._load_df(),
+            selected_names=selected_names,
+            selected_years=selected_years,
+            selected_months=selected_months,
+        )
+
+        return (
+            df.group_by("NAME")
+            .agg(pl.col("Count").sum().alias("Count"))
+            .sort("Count", descending=True)
+        )
+
+    @classmethod
+    def get_monthly_trend_df(
+        cls,
+        selected_names=None,
+        selected_years=None,
+        selected_months=None,
+        trend_mode="total",
+    ) -> pl.DataFrame:
+        df = cls._apply_filters(
+            cls._load_df(),
+            selected_names=selected_names,
+            selected_years=selected_years,
+            selected_months=selected_months,
+        )
+
+        if df.is_empty():
+            return df
+
+        if trend_mode == "compare":
+            result = (
+                df.group_by(["NAME", "year_creation", "mth_creation"])
+                .agg(pl.col("Count").sum().alias("Count"))
+                .sort(["year_creation", "mth_creation", "NAME"])
             )
-            .group_by("dt_creation")
-            .agg(pl.col("Count").sum().alias("total_count"))
-            .sort("dt_creation")
-            .to_dicts()
+        else:
+            result = (
+                df.group_by(["year_creation", "mth_creation"])
+                .agg(pl.col("Count").sum().alias("Count"))
+                .sort(["year_creation", "mth_creation"])
+            )
+
+        result = result.with_columns(
+            (
+                pl.col("mth_creation").map_elements(
+                    lambda x: calendar.month_abbr[x],
+                    return_dtype=pl.Utf8,
+                )
+                + pl.lit(" ")
+                + pl.col("year_creation").cast(pl.Utf8)
+            ).alias("period_label"),
+            (
+                pl.col("year_creation") * 100 + pl.col("mth_creation")
+            ).alias("period_order"),
         )
 
-        return [
-            {"date": row["dt_creation"].strftime("%d %b %Y"), "total_count": row["total_count"]}
-            for row in result
-        ]
+        return result
+
+    @classmethod
+    def get_yearly_breakdown_df(
+        cls,
+        selected_names=None,
+        selected_years=None,
+        selected_months=None,
+    ) -> pl.DataFrame:
+        df = cls._apply_filters(
+            cls._load_df(),
+            selected_names=selected_names,
+            selected_years=selected_years,
+            selected_months=selected_months,
+        )
+
+        return (
+            df.group_by(["NAME", "year_creation"])
+            .agg(pl.col("Count").sum().alias("Count"))
+            .sort(["year_creation", "NAME"])
+        )
