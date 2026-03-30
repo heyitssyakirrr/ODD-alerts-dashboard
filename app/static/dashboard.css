@@ -340,7 +340,7 @@ html, body {
 .explorer-hero {
     background:
         radial-gradient(circle at top right, rgba(255, 194, 32, 0.12), transparent 30%),
-        linear-gradient(135deg, #111827 0%, #1F2937 55%, #8A0303 100%);
+        linear-gradient(135deg, #8A0303 0%, #A80519 60%, #B91C1C 100%);
 }
 
 .filter-bar-card,

@@ -25,9 +25,9 @@ class AnalyticsService:
 
         total_alerts = int(df["Count"].sum())
 
-        closed_df = df.filter(pl.col("NAME").cast(pl.Utf8).str.starts_with("Closed"))
+        closed_df = df.filter(pl.col("NAME").cast(pl.Utf8).str.starts_with("Closed")) # not sure about closed - rejected or accepeted
         open_df = df.filter(~pl.col("NAME").cast(pl.Utf8).str.starts_with("Closed"))
-        escalated_df = df.filter(pl.col("NAME") == "Escalated")
+        escalated_df = df.filter(pl.col("NAME") == "Escalated") # assuming there's a specific status for escalated alerts
 
         closed_alerts = int(closed_df["Count"].sum()) if closed_df.height else 0
         open_alerts = int(open_df["Count"].sum()) if open_df.height else 0

@@ -4,6 +4,7 @@ import polars as pl
 from app.services.data_service import AlertDataService
 from app.services.filter_utils import apply_filters
 
+# retrieve the available filter options for the dropdowns in the frontend
 
 class FilterOptionService:
     @classmethod

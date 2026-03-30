@@ -76,7 +76,7 @@ def apply_base_layout(fig, x_title=None, y_title=None, margin=None, show_legend=
     )
     return fig
 
-
+# to create the monthly trend figure
 def build_trend_chart(df, trend_mode="total"):
     if df.is_empty():
         return empty_figure("Monthly Trend")
@@ -155,7 +155,7 @@ def build_trend_chart(df, trend_mode="total"):
 
     return fig
 
-
+# to create the bar chart for status distribution
 def build_status_chart(df):
     if df.is_empty():
         return empty_figure("Status Distribution")
@@ -189,7 +189,7 @@ def build_status_chart(df):
 
     return fig
 
-
+# to create the stacked bar chart for the yearly breakdown
 def build_yearly_chart(df):
     if df.is_empty():
         return empty_figure("Yearly Breakdown")
