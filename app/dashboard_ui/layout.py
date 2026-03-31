@@ -132,6 +132,7 @@ def build_dashboard_layout():
                                 className="reset-filter-link icon-only",
                                 title="Reset filters",
                             ),
+
                             html.Div(
                                 className="filter-group filter-group-wide",
                                 children=[
@@ -142,10 +143,12 @@ def build_dashboard_layout():
                                         value=[],
                                         multi=True,
                                         placeholder="All statuses",
-                                        className="filter-dropdown",
+                                        className="filter-dropdown filter-dropdown-clean",
+                                        clearable=False,
                                     ),
                                 ],
                             ),
+
                             html.Div(
                                 className="filter-group",
                                 children=[
@@ -156,10 +159,12 @@ def build_dashboard_layout():
                                         value=[],
                                         multi=True,
                                         placeholder="All years",
-                                        className="filter-dropdown",
+                                        className="filter-dropdown filter-dropdown-clean",
+                                        clearable=False,
                                     ),
                                 ],
                             ),
+
                             html.Div(
                                 className="filter-group",
                                 children=[
@@ -170,10 +175,12 @@ def build_dashboard_layout():
                                         value=[],
                                         multi=True,
                                         placeholder="All months",
-                                        className="filter-dropdown",
+                                        className="filter-dropdown filter-dropdown-clean",
+                                        clearable=False,
                                     ),
                                 ],
                             ),
+
                             html.Div(
                                 className="filter-group filter-group-mode",
                                 children=[
@@ -185,9 +192,9 @@ def build_dashboard_layout():
                                             {"label": "Status Comparison", "value": "compare"},
                                         ],
                                         value="total",
-                                        className="trend-mode-toggle",
-                                        labelClassName="trend-mode-option",
-                                        inputClassName="trend-mode-input",
+                                        className="trend-mode-toggle trend-mode-toggle-clean",
+                                        labelClassName="trend-mode-option trend-mode-option-clean",
+                                        inputClassName="trend-mode-input trend-mode-input-clean",
                                     ),
                                 ],
                             ),
